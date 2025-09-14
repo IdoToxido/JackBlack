@@ -12,3 +12,4 @@ C:\Users\User\Desktop\Final Project - IdoToxido\obj\Debug\net9.0\refint\Final Pr
 C:\Users\User\Desktop\Final Project - IdoToxido\obj\Debug\net9.0\Final Project - IdoToxido.pdb
 C:\Users\User\Desktop\Final Project - IdoToxido\obj\Debug\net9.0\Final Project - IdoToxido.genruntimeconfig.cache
 C:\Users\User\Desktop\Final Project - IdoToxido\obj\Debug\net9.0\ref\Final Project - IdoToxido.dll
+C:\Users\User\Desktop\Final Project - IdoToxido\obj\Debug\net9.0\Final Project - IdoToxido.sourcelink.json

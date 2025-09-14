@@ -4,7 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-// CHANGE ALL ARRAYS TO LISTS
+// DEBUG HANDSUM
+// investigating error of not counting dealer's sum correctly (with A, J and K, 7, 2)
 class PlayingCards()
 {
     public int?[,] ShuffledDeck = { { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 },
@@ -43,6 +44,7 @@ class PlayingCards()
     }
 
 }
+
 class Program
 {
     public static void Main()
@@ -94,42 +96,43 @@ class Program
                 PD.DrawCard(Dealer);
             }
             List<string> StrPlayer = [];
-            List2Str(Player);
-            List<string> StrDealer = Arr2Str(Dealer);
+            StrPlayer = List2Str(Player);
+            List<string> StrDealer = List2Str(Dealer);
             Print(StrDealer, StrPlayer, false);
 
             // Options
             bool hit = false;
             bool DD = false;
-            List<int?> PlayerHand2 = [];
-            List<int?> PlayerHand3 = [];
-            List<int?> PlayerHand4 = [];
-            List<int?> TempArr = [];
-            List<int?> TempArr2 = [];
             bool lost = false;
             while (true)
             {
                 Console.WriteLine("H - hit,  S - stand,  Y - split,  D - double down");
                 Console.WriteLine();
                 if (HandSum(Player) == 21)
+                {
+                    if (21 == HandSum(Dealer))
+                    {
+                        Money += bet;
+                    }
+                    Money += (int)(bet * 2.5);
                     break;
-
+                }
                 ConsoleKey Act2 = Console.ReadKey(true).Key;
                 if (Act2 == ConsoleKey.H && !DD)
                 {
-                    Player = PD.DrawCard(Player);
+                    PD.DrawCard(Player);
                     hit = true;
-                    Print(Arr2Str(Dealer), Arr2Str(Player), false);
+                    Print(List2Str(Dealer), List2Str(Player), false);
                     if (HandSum(Player) >= 22)
                     {
                         lost = true;
-                        Console.WriteLine("You lost! Better luck next time!");
+                        Console.WriteLine("You Busted! Better luck next time!");
                         break;
                     }
                 }
                 else if (Act2 == ConsoleKey.D && !hit)
                 {
-                    Player = PD.DrawCard(Player);
+                    PD.DrawCard(Player);
                     hit = true;
                     DD = true;
                     if (HandSum(Player) >= 22)
@@ -139,22 +142,27 @@ class Program
                         break;
                     }
                 }
-                else
-                    Console.WriteLine("Invalid Input! Please Try Again.");
-
-                if ((Act2 == ConsoleKey.D && !hit) || Act2 == ConsoleKey.S)
+                else if (Act2 == ConsoleKey.S)
                 {
                     Console.WriteLine();
                     break;
                 }
+                else
+                    Console.WriteLine("Invalid Input! Please Try Again.");
+                if ((Act2 == ConsoleKey.D && !hit))
+                {
+                    Console.WriteLine();
+                    break;
+                }
+
             }
 
-        
+
             while (HandSum(Dealer) <= 16 && !lost)
             {
-                Dealer = PD.DrawCard(Dealer);
+                PD.DrawCard(Dealer);
 
-                Print(Arr2Str(Dealer), Arr2Str(Player), true);
+                Print(List2Str(Dealer), List2Str(Player), true);
 
                 if (HandSum(Player) == HandSum(Dealer) && HandSum(Dealer) >= 17)
                 {
@@ -221,12 +229,15 @@ class Program
                     case "13":
                         rtn.Add("K");
                         break;
+                    default:
+                        rtn.Add(Cards[i].ToString()!);
+                        break;
                 }
             }
         }
         return rtn;
     }
-    public static void Print(string[] DHand, string[] PHand, bool Dcont)
+    public static void Print(List<string> DHand, List<string> PHand, bool Dcont)
     {
         for (int j = 0; j < 120; j++)
         {
@@ -247,13 +258,15 @@ class Program
         for (int i = 0; i < 2; i++)
             Console.WriteLine();
     }
-    public static void PrintCard(string[] C, bool D, bool Cont)
+    // C - Card, D - Dealer's Card, Cont - Continue
+    public static void PrintCard(List<string> C, bool D, bool Cont)
     {
+        // sets dealer's cards to red and player's to blue
         if (D)
             Console.ForegroundColor = ConsoleColor.Red;
         else
             Console.ForegroundColor = ConsoleColor.Blue;
-
+        // print card
         if (!Cont)
         {
             CardTop();
@@ -264,19 +277,19 @@ class Program
         }
         else
         {
-            for (int i = 0; i < C.Length; i++)
+            for (int i = 0; i < C.Count; i++)
             {
                 CardTop();
                 Console.Write(' ');
             }
             Console.WriteLine();
-            for (int i = 0; i < C.Length; i++)
+            for (int i = 0; i < C.Count; i++)
             {
                 CardMid(C, i);
                 Console.Write(' ');
             }
             Console.WriteLine();
-            for (int i = 0; i < C.Length; i++)
+            for (int i = 0; i < C.Count; i++)
             {
                 CardBot();
                 Console.Write(' ');
@@ -296,7 +309,7 @@ class Program
         Console.Write('|');
 
     }
-    public static void CardMid(string[] C, int i)
+    public static void CardMid(List<string> C, int i)
     {
         Console.Write('|');
         if (C[i].Length == 2)
@@ -321,42 +334,28 @@ class Program
         }
         Console.Write('|');
     }
-    public static int? HandSum(int?[] PHand)
+    public static int? HandSum(List<int?> Hand)
     {
+        Console.ForegroundColor = ConsoleColor.Green;
         int? rtn = 0;
         int aceCount = 0;
-        for (int i = 0; i < PHand.Length; i++)
+        for (int i = 0; i < Hand.Count; i++)
         {
-            Console.WriteLine("CurrentSum " + rtn);
-            if (PHand[i] == 1)
+
+            if (Hand[i] == 1)
             {
                 rtn += 11;
                 aceCount++;
             }
-            if (PHand[i] != 1)
-                rtn += PHand[i];
+            if (Hand[i] != 1)
+            {
+                rtn += Hand[i];
+            }
         }
-        if (aceCount == 1 && rtn >= 22)
+        while (aceCount >= 1 && rtn >= 22)
         {
-            Console.WriteLine(rtn);
             rtn -= 10;
-            Console.WriteLine(rtn);
             aceCount--;
-        }
-        if (aceCount == 2 && rtn >= 22)
-        {
-            rtn -= 20;
-            aceCount -= 2;
-        }
-        if (aceCount == 3 && rtn >= 22)
-        {
-            rtn -= 30;
-            aceCount -= 3;
-        }
-        if (aceCount == 4 && rtn >= 22)
-        {
-            rtn -= 40;
-            aceCount -= 4;
         }
         return rtn;
     }
