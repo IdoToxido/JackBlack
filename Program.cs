@@ -1,11 +1,5 @@
-﻿using System.Diagnostics.Contracts;
-using System.Formats.Asn1;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Security.Cryptography.X509Certificates;
 
-// DEBUG HANDSUM
-// investigating error of not counting dealer's sum correctly (with A, J and K, 7, 2)
 class PlayingCards()
 {
     public int?[,] ShuffledDeck = { { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 },
@@ -42,14 +36,19 @@ class PlayingCards()
             }
         }
     }
-
 }
 
 class Program
 {
+    static bool hit = false;
+    static bool DD = false;
+    static bool lost = false;
+    static List<int?> Dealer = [];
+    static List<int?> Player = [];
+    static PlayingCards PD = new();
+
     public static void Main()
     {
-        PlayingCards PD = new();
         string input = "";
         int bet = 0;
         int Money = 100;
@@ -88,8 +87,7 @@ class Program
             DealerMoney += bet;
 
             // Card Shuffle
-            List<int?> Dealer = [];
-            List<int?> Player = [];
+
             for (int i = 0; i < 2; i++)
             {
                 PD.DrawCard(Player);
@@ -101,9 +99,6 @@ class Program
             Print(StrDealer, StrPlayer, false);
 
             // Options
-            bool hit = false;
-            bool DD = false;
-            bool lost = false;
             while (true)
             {
                 Console.WriteLine("H - hit,  S - stand,  Y - split,  D - double down");
@@ -117,47 +112,32 @@ class Program
                     Money += (int)(bet * 2.5);
                     break;
                 }
-                ConsoleKey Act2 = Console.ReadKey(true).Key;
-                if (Act2 == ConsoleKey.H && !DD)
+                ConsoleKey Act = Console.ReadKey(true).Key;
+                if (Act == ConsoleKey.Y && !hit)
                 {
-                    PD.DrawCard(Player);
-                    hit = true;
-                    Print(List2Str(Dealer), List2Str(Player), false);
-                    if (HandSum(Player) >= 22)
-                    {
-                        lost = true;
-                        Console.WriteLine("You Busted! Better luck next time!");
-                        break;
-                    }
+
                 }
-                else if (Act2 == ConsoleKey.D && !hit)
+                if (Act == ConsoleKey.H && !DD)
                 {
-                    PD.DrawCard(Player);
-                    hit = true;
+                    if (LostHit())
+                        break;
+                }
+                else if (Act == ConsoleKey.D && !hit)
+                {
+                    if (LostHit())
+                        break;
                     DD = true;
-                    if (HandSum(Player) >= 22)
-                    {
-                        lost = true;
-                        Console.WriteLine("You Busted! Better luck next time!");
-                        break;
-                    }
                 }
-                else if (Act2 == ConsoleKey.S)
+                else if (Act == ConsoleKey.S)
                 {
                     Console.WriteLine();
                     break;
                 }
                 else
                     Console.WriteLine("Invalid Input! Please Try Again.");
-                if ((Act2 == ConsoleKey.D && !hit))
-                {
-                    Console.WriteLine();
-                    break;
-                }
-
             }
 
-
+            // checking sums if win or lose
             while (HandSum(Dealer) <= 16 && !lost)
             {
                 PD.DrawCard(Dealer);
@@ -167,6 +147,8 @@ class Program
                 if (HandSum(Player) == HandSum(Dealer) && HandSum(Dealer) >= 17)
                 {
                     Console.WriteLine("Push!");
+                    Money += bet;
+                    DealerMoney -= bet;
                     break;
                 }
                 else if (HandSum(Dealer) >= 22)
@@ -197,6 +179,19 @@ class Program
             }
         }
     }
+    public static bool LostHit()
+    {
+        PD.DrawCard(Player);
+        hit = true;
+        Print(List2Str(Dealer), List2Str(Player), false);
+        if (HandSum(Player) >= 22)
+        {
+            lost = true;
+            Console.WriteLine("You Busted! Better luck next time!");
+        }
+        return lost;
+    }
+
     public static bool CheckInput(string input)
     {
         foreach (char c in input)
@@ -336,7 +331,6 @@ class Program
     }
     public static int? HandSum(List<int?> Hand)
     {
-        Console.ForegroundColor = ConsoleColor.Green;
         int? rtn = 0;
         int aceCount = 0;
         for (int i = 0; i < Hand.Count; i++)
@@ -349,7 +343,12 @@ class Program
             }
             if (Hand[i] != 1)
             {
-                rtn += Hand[i];
+                if (Hand[i] >= 10)
+                {
+                    rtn += 10;
+                }
+                else
+                    rtn += Hand[i];
             }
         }
         while (aceCount >= 1 && rtn >= 22)
@@ -368,5 +367,9 @@ class Program
                 rtn = [.. rtn, Arr[i]];
         }
         return rtn;
+    }
+    public static bool Split()
+    {
+
     }
 }
