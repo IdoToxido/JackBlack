@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Final Project - IdoToxido")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+63eeced1ccd191fa467a95c6ea845cb2e95cf837")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fbf91aa7a183688021bcad9f3c9613a266f99929")]
 [assembly: System.Reflection.AssemblyProductAttribute("Final Project - IdoToxido")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Final Project - IdoToxido")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

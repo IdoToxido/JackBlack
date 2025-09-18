@@ -43,21 +43,23 @@ class Program
     static bool hit = false;
     static bool DD = false;
     static bool lost = false;
+    static int bet = 0;
+
     static List<int?> Dealer = [];
     static List<int?> Player = [];
     static PlayingCards PD = new();
-
+    static int Money = 100;
+    static int DealerMoney = 1000;
+    static List<int?> SplitHandSums = [];
     public static void Main()
     {
         string input = "";
-        int bet = 0;
-        int Money = 100;
-        int DealerMoney = 1000;
+
         while (input != "end")
         {
             PD.Shuffle();
             bet = 0;
-            while (true) //Checking that the bet is alright
+            while (true) // Checking that the bet is alright
             {
                 Console.WriteLine($"Dealer's Currency: {DealerMoney}$");
                 Console.WriteLine($"Currency: {Money}$, How much would you like to bet?");
@@ -69,11 +71,13 @@ class Program
                     bet = int.Parse(input);
                     if (bet > Money)
                     {
-                        Console.WriteLine("Insufficient Funds! Enter a new amount to bet."); continue;
+                        Console.WriteLine("Insufficient Funds! Enter a new amount to bet.");
+                        continue;
                     }
                     if (bet * 2.5 > DealerMoney)
                     {
-                        Console.WriteLine("Dealer Has Insufficient Funds! Enter a new amount to bet."); continue;
+                        Console.WriteLine("Dealer Has Insufficient Funds! Enter a new amount to bet.");
+                        continue;
                     }
                     else
                     {
@@ -109,22 +113,27 @@ class Program
                     {
                         Money += bet;
                     }
-                    Money += (int)(bet * 2.5);
+                    else
+                    {
+                        Money += (int)(bet * 2.5);
+                        DealerMoney -= (int)(bet * 2.5);
+                    }
                     break;
                 }
                 ConsoleKey Act = Console.ReadKey(true).Key;
                 if (Act == ConsoleKey.Y && !hit)
                 {
-
+                    Split(Player[0], Player[1]);
+                    break;
                 }
                 if (Act == ConsoleKey.H && !DD)
                 {
-                    if (LostHit())
+                    if (LostHit(false))
                         break;
                 }
                 else if (Act == ConsoleKey.D && !hit)
                 {
-                    if (LostHit())
+                    if (LostHit(false))
                         break;
                     DD = true;
                 }
@@ -138,51 +147,14 @@ class Program
             }
 
             // checking sums if win or lose
-            while (HandSum(Dealer) <= 16 && !lost)
-            {
-                PD.DrawCard(Dealer);
-
-                Print(List2Str(Dealer), List2Str(Player), true);
-
-                if (HandSum(Player) == HandSum(Dealer) && HandSum(Dealer) >= 17)
-                {
-                    Console.WriteLine("Push!");
-                    Money += bet;
-                    DealerMoney -= bet;
-                    break;
-                }
-                else if (HandSum(Dealer) >= 22)
-                {
-                    Console.WriteLine("Dealer Busted! You Won!");
-                    Money += bet * 2;
-                    DealerMoney -= bet * 2;
-                    break;
-                }
-                else if (HandSum(Player) == 21 && HandSum(Dealer) >= 17)
-                {
-                    Console.WriteLine("BlackJack!");
-                    Money += bet * (6 / 2);
-                    DealerMoney -= bet * (6 / 2);
-                    break;
-                }
-                else if (HandSum(Player) > HandSum(Dealer) && HandSum(Dealer) >= 17)
-                {
-                    Console.WriteLine("You Won!");
-                    Money += bet * 2;
-                    DealerMoney -= bet * 2;
-                    break;
-                }
-                else if (HandSum(Player) < HandSum(Dealer))
-                {
-                    Console.WriteLine("You lost! Better luck next time!");
-                }
-            }
+            DdrawPwin();
         }
     }
-    public static bool LostHit()
+    public static bool LostHit(bool IsInSplit)
     {
         PD.DrawCard(Player);
-        hit = true;
+        if (!IsInSplit)
+            hit = true;
         Print(List2Str(Dealer), List2Str(Player), false);
         if (HandSum(Player) >= 22)
         {
@@ -368,8 +340,87 @@ class Program
         }
         return rtn;
     }
-    public static bool Split()
+    public static bool Split(int? card1, int? card2)
     {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Cards Split! Your New Bet Is {bet * 2}");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Press 'S' or bust in order to get to the next hand.");
+        Console.ResetColor();
+        List<int?> Ydeck1 = [card1];
+        List<int?> Ydeck2 = [card2];
+        PD.DrawCard(Ydeck1);
+        PD.DrawCard(Ydeck2);
+        Print(List2Str(Dealer), List2Str(Ydeck1), false);
 
+        while (true)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine("Hand 1");
+            ConsoleKey Act = Console.ReadKey(true).Key;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("H - hit,  S - stand,  Y - split");
+            Console.ResetColor();
+            if (Act == ConsoleKey.Y && Ydeck1[0] == Ydeck1[1] && !hit)
+            {
+                Split(Ydeck1[0], Ydeck1[1]);
+            }
+            if (Act == ConsoleKey.H)
+            {
+                hit = true;
+                if (LostHit(true))
+                    break;
+            }
+            else if (Act == ConsoleKey.S || HandSum(Ydeck1) == 21)
+            {
+                SplitHandSums.Add(HandSum(Ydeck1));
+                break;
+            }
+
+        }
+
+    }
+    // dealer draws cards until 17 then checks if the player won or blackjacked
+    public static void DdrawPwin()
+    {
+        while (HandSum(Dealer) <= 16 && !lost)
+        {
+            PD.DrawCard(Dealer);
+
+            Print(List2Str(Dealer), List2Str(Player), true);
+
+            if (HandSum(Player) == HandSum(Dealer) && HandSum(Dealer) >= 17)
+            {
+                Console.WriteLine("Push!");
+                Money += bet;
+                DealerMoney -= bet;
+                break;
+            }
+            else if (HandSum(Dealer) >= 22)
+            {
+                Console.WriteLine("Dealer Busted! You Won!");
+                Money += bet * 2;
+                DealerMoney -= bet * 2;
+                break;
+            }
+            else if (HandSum(Player) == 21 && HandSum(Dealer) >= 17)
+            {
+                Console.WriteLine("BlackJack!");
+                Money += bet * (6 / 2);
+                DealerMoney -= bet * (6 / 2);
+                break;
+            }
+            else if (HandSum(Player) > HandSum(Dealer) && HandSum(Dealer) >= 17)
+            {
+                Console.WriteLine("You Won!");
+                Money += bet * 2;
+                DealerMoney -= bet * 2;
+                break;
+            }
+            else if (HandSum(Player) < HandSum(Dealer))
+            {
+                Console.WriteLine("You lost! Better luck next time!");
+            }
+        }
     }
 }
