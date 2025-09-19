@@ -1,40 +1,45 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
-// FIX POST STAND CONCLUSIONS
+// Complete DWC function
+// Fix and/or complete SPLIT option
 class PlayingCards()
 {
-    public int?[,] ShuffledDeck = { { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 },
-                                    { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 },
-                                    { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 },
-                                    { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 } };
-    public int?[,] Deck = { { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 },
-                            { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 },
-                            { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 },
-                            { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 } };
+    // UNTOUCHED
+    public List<int> ShuffledDeck = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                                     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                                     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                                     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ];
+    // Current playing deck
+    public List<int> Deck = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ];
 
     public void Shuffle()
     {
-        for (int i = 0; i < ShuffledDeck.GetLength(0); i++)
-        {
-            for (int j = 0; j < ShuffledDeck.GetLength(1); j++)
-            {
-                Deck[i, j] = ShuffledDeck[i, j];
-            }
-        }
+        ShuffledDeck = new(Deck);
     }
-    public void DrawCard(List<int?> Player)
+    public void DrawCard(List<int> Player)
     {
         Random rnd = new();
         while (true)
         {
-            int Suit = rnd.Next(0, 4);
-            int Num = rnd.Next(0, 13);
-            if (Deck[Suit, Num] != null)
-            {
-                Player.Add(Deck[Suit, Num]);
-                Deck[Suit, Num] = null;
-                break;
-            }
+            int Num = rnd.Next(0, Deck.Count);
+            Player.Add(Deck[Num]);
+            Deck.RemoveAt(Num);
+            break;
+        }
+    }
+    // Compact name cuz I want to
+    // Draw Wanted Card
+    public void DWC(List<int> Player, int card)
+    {
+        if (!Deck.Contains(card))
+        {
+            if (card > 13)
+                DWC(Player, card - 1);
+            else if (card <)
+                DWC(Player, card - 1);
         }
     }
 }
@@ -47,21 +52,19 @@ class Program
     static bool Ysplit = false;
     static int bet = 0;
 
-    static List<int?> Dealer = [];
-    static List<int?> Player = [];
+    static List<int> Dealer = [];
+    static List<int> Player = [];
     static PlayingCards PD = new();
     static int Money = 100;
     static int DealerMoney = 1000;
-    static List<int?> SplitHandSums = [];
+    static List<int> SplitHandSums = [];
     public static void Main()
     {
         string input = "";
-        Dealer = [];
-        Player = [];
-        PD.Shuffle();
-
         while (input != "end")
         {
+            Dealer = [];
+            Player = [];
             PD.Shuffle();
             bet = 0;
             while (true) // Checking that the bet is alright
@@ -79,7 +82,7 @@ class Program
                         Console.WriteLine("Insufficient Funds! Enter a new amount to bet.");
                         continue;
                     }
-                    if (bet * 2.5 > DealerMoney)
+                    if (bet * 2 > DealerMoney)
                     {
                         Console.WriteLine("Dealer Has Insufficient Funds! Enter a new amount to bet.");
                         continue;
@@ -96,14 +99,16 @@ class Program
             DealerMoney += bet;
 
             // Card Shuffle
-
+            // FREEZE TO CONTROL CARDS
+            // PLAYER CARD CONTROLLED TO BE [10,K], REMOVE LINE TO CONTINUE NORMAL GAME 
+            PD.DWC(Player, 10); PD.DWC(Player, 13);
+            // ...
             for (int i = 0; i < 2; i++)
             {
-                PD.DrawCard(Player);
+                // PD.DrawCard(Player);
                 PD.DrawCard(Dealer);
             }
-            List<string> StrPlayer = [];
-            StrPlayer = List2Str(Player);
+            List<string> StrPlayer = List2Str(Player);
             List<string> StrDealer = List2Str(Dealer);
             Print(StrDealer, StrPlayer, false);
 
@@ -153,7 +158,7 @@ class Program
             }
 
             // checking sums if win or lose
-            if (Ysplit)
+            if (!Ysplit)
                 DdrawPwin();
             else
                 SplitDdrawPwin();
@@ -182,7 +187,7 @@ class Program
         }
         return true;
     }
-    public static List<string> List2Str(List<int?> Cards)
+    public static List<string> List2Str(List<int> Cards)
     {
         List<string> rtn = [];
         for (int i = 0; i < Cards.Count; i++)
@@ -310,54 +315,38 @@ class Program
         }
         Console.Write('|');
     }
-    public static int? HandSum(List<int?> Hand)
+    public static int HandSum(List<int> Hand)
     {
-        int? rtn = 0;
+        int sum = 0;
         int aceCount = 0;
-        for (int i = 0; i < Hand.Count; i++)
+        foreach (int iterator in Hand)
         {
-
-            if (Hand[i] == 1)
+            if (iterator == 1)
             {
-                rtn += 11;
-                aceCount++;
+                sum += 11;
+                aceCount += 1;
             }
-            if (Hand[i] != 1)
-            {
-                if (Hand[i] >= 10)
-                {
-                    rtn += 10;
-                }
-                else
-                    rtn += Hand[i];
-            }
+            else if (iterator >= 10)
+                sum += 10;
+            else
+                sum += iterator;
         }
-        while (aceCount >= 1 && rtn >= 22)
+        while (sum > 21 && aceCount > 0)
         {
-            rtn -= 10;
+            sum -= 10;
             aceCount--;
         }
-        return rtn;
+        return sum;
     }
-    public static int?[] CopyArr(int?[] Arr)
-    {
-        int?[] rtn = [];
-        for (int i = 0; i < Arr.Length; i++)
-        {
-            if (rtn[i] != null)
-                rtn = [.. rtn, Arr[i]];
-        }
-        return rtn;
-    }
-    public static void Split(int? card1, int? card2)
+    public static void Split(int card1, int card2)
     {
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"Cards Split! Your New Bet Is {bet * 2}");
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine("Press 'S' or bust in order to get to the next hand.");
         Console.ResetColor();
-        List<int?> Ydeck1 = [card1];
-        List<int?> Ydeck2 = [card2];
+        List<int> Ydeck1 = [card1];
+        List<int> Ydeck2 = [card2];
         PD.DrawCard(Ydeck1);
         PD.DrawCard(Ydeck2);
         Print(List2Str(Dealer), List2Str(Ydeck1), false);
@@ -371,8 +360,8 @@ class Program
         {
             PD.DrawCard(Dealer);
         }
-        int? Dsum = HandSum(Dealer);
-        foreach (int? Psum in SplitHandSums)
+        int Dsum = HandSum(Dealer);
+        foreach (int Psum in SplitHandSums)
         {
             if (Psum == Dsum)
             {
@@ -405,8 +394,8 @@ class Program
             PD.DrawCard(Dealer);
         }
         Print(List2Str(Dealer), List2Str(Player), true);
-        int? Psum = HandSum(Player);
-        int? Dsum = HandSum(Dealer);
+        int Psum = HandSum(Player);
+        int Dsum = HandSum(Dealer);
         if (Psum == Dsum)
         {
             Console.WriteLine("Push!");
@@ -430,7 +419,7 @@ class Program
             Console.WriteLine("You lost! Better luck next time!");
         }
     }
-    public static void SplitActions(List<int?> Ydeck, int i)
+    public static void SplitActions(List<int> Ydeck, int i)
     {
         while (true)
         {
