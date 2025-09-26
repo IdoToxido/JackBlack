@@ -69,20 +69,18 @@ class Program
     static string input = "";
     public static void Main()
     {
+        CheckCountInput();
+        for (int i = 0; i < PlayerCount; i++)
+        {
+            AllPlayers.Add(new User());
+        }
         while (input != "end")
         {
             PD.Shuffle();
             Dealer = [];
-            CheckCountInput();
-            for (int i = 0; i < PlayerCount; i++)
-            {
-                AllPlayers.Add(new User());
-            }
+            CheckBetInput();
             for (int i = 0; i < AllPlayers.Count; i++)
             {
-                AllPlayers[i].Deck = [];
-                AllPlayers[i].bet = 0;
-                CheckBetInput(i);
                 AllPlayers[i].Money -= AllPlayers[i].bet;
                 DealerMoney += AllPlayers[i].bet;
 
@@ -103,9 +101,6 @@ class Program
                 // Options
                 while (true)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Player {i + 1}'s turn!");
-                    Console.ResetColor();
                     Console.WriteLine("H - hit,  S - stand,  Y - split,  D - double down");
                     Console.WriteLine();
                     if (HandSum(AllPlayers[i].Deck) == 21)
@@ -147,13 +142,10 @@ class Program
                     else
                         Console.WriteLine("Invalid Input! Please Try Again.");
                 }
-
-                // checking sums if win or lose
-                if (!AllPlayers[i].HasSplit && !AllPlayers[i].lost)
-                    DdrawPwin();
-                else if (!AllPlayers[i].lost)
-                    SplitDdrawPwin();
             }
+            // checking sums if win or lose
+            DdrawPwin();
+            SplitDdrawPwin();
         }
     }
     public static bool LostHit(bool IsInSplit, int i)
@@ -224,7 +216,8 @@ class Program
         {
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Player {index + 1}'s Turn ");
+            Console.WriteLine($"Player {index + 1}'s turn! ");
+            Console.ResetColor();
         }
         for (int i = 0; i < 2; i++)
             Console.WriteLine();
@@ -396,7 +389,7 @@ class Program
         {
             PD.DrawCard(Dealer);
         }
-        Print(Dealer, AllPlayers[0], true, 0);
+        Print(List2Str(Dealer), List2Str(AllPlayers[0].Deck), true, 0);
         for (int i = 0; i < PlayerCount; i++)
         {
             if (AllPlayers[i].HasSplit)
@@ -488,57 +481,60 @@ class Program
         }
 
     }
-    public static void CheckBetInput(int i)
+    public static void CheckBetInput()
     {
-        while (true) // Checking that the bet is alright
+        for (int i = 0; i < PlayerCount; i++)
         {
-            Console.WriteLine($"Dealer's Currency: {DealerMoney}$");
-            Console.WriteLine($"Player {i + 1} Currency: {AllPlayers[i].Money}$, How much would player {i + 1} like to bet?");
-            input = Console.ReadLine()!;
-            if (input == "end")
-                break;
-            if (CheckNumber(input))
+            while (true) // Checking that the bet is alright
             {
-                AllPlayers[i].bet = int.Parse(input);
-                if (AllPlayers[i].bet > AllPlayers[i].Money)
+                Console.WriteLine($"Dealer's Currency: {DealerMoney}$");
+                Console.WriteLine($"Player {i + 1} Currency: {AllPlayers[i].Money}$, How much would player {i + 1} like to bet?");
+                input = Console.ReadLine()!;
+                if (CheckNumber(input))
                 {
-                    Console.WriteLine($"Insufficient funds for player number {i + 1}! Enter a new amount to bet.");
-                    continue;
-                }
-                if (AllPlayers[i].bet * 2 > DealerMoney)
-                {
-                    Console.WriteLine($"Dealer has insufficient funds! Player{i + 1}, Please enter a new amount to bet.");
-                    continue;
+                    AllPlayers[i].bet = int.Parse(input);
+                    if (AllPlayers[i].bet > AllPlayers[i].Money)
+                    {
+                        Console.WriteLine($"Insufficient funds for player number {i + 1}! Enter a new amount to bet.");
+                        continue;
+                    }
+                    if (AllPlayers[i].bet * 2 > DealerMoney)
+                    {
+                        Console.WriteLine($"Dealer has insufficient funds! Player{i + 1}, Please enter a new amount to bet.");
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
                 else
-                {
-                    break;
-                }
+                    Console.WriteLine("Input Error! Please Try Again."); continue;
             }
-            else
-                Console.WriteLine("Input Error! Please Try Again."); continue;
         }
     }
     public static void PrintWinChart()
     {
         int DealerHandSum = HandSum(Dealer);
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 7; i++)
         {
             Console.Write('_');
         }
+        Console.WriteLine();
         for (int i = 0; i < PlayerCount; i++)
         {
             int PlayerHandSum = HandSum(AllPlayers[i].Deck);
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"{PlayerHandSum,-3}");
+            Console.Write($"{PlayerHandSum,-3}");
             Console.ResetColor();
-            Console.WriteLine("| ");
+            Console.Write("| ");
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"{DealerHandSum,-3}|");
+            Console.Write($"{DealerHandSum,-3}|");
             Console.ResetColor();
             Console.WriteLine("| ");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Win: {PlayerHandSum > DealerHandSum}");
+            Console.ResetColor();
         }
     }
 }

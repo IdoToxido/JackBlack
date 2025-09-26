@@ -13,3 +13,18 @@ C:\Users\User\Desktop\Final Project - IdoToxido\obj\Debug\net9.0\Final Project -
 C:\Users\User\Desktop\Final Project - IdoToxido\obj\Debug\net9.0\Final Project - IdoToxido.genruntimeconfig.cache
 C:\Users\User\Desktop\Final Project - IdoToxido\obj\Debug\net9.0\ref\Final Project - IdoToxido.dll
 C:\Users\User\Desktop\Final Project - IdoToxido\obj\Debug\net9.0\Final Project - IdoToxido.sourcelink.json
+C:\Users\user\FinaleProg\JackBlack-2\bin\Debug\net9.0\Final Project - IdoToxido.exe
+C:\Users\user\FinaleProg\JackBlack-2\bin\Debug\net9.0\Final Project - IdoToxido.deps.json
+C:\Users\user\FinaleProg\JackBlack-2\bin\Debug\net9.0\Final Project - IdoToxido.runtimeconfig.json
+C:\Users\user\FinaleProg\JackBlack-2\bin\Debug\net9.0\Final Project - IdoToxido.dll
+C:\Users\user\FinaleProg\JackBlack-2\bin\Debug\net9.0\Final Project - IdoToxido.pdb
+C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\Final Project - IdoToxido.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\Final Project - IdoToxido.AssemblyInfoInputs.cache
+C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\Final Project - IdoToxido.AssemblyInfo.cs
+C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\Final Project - IdoToxido.csproj.CoreCompileInputs.cache
+C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\Final Project - IdoToxido.sourcelink.json
+C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\Final Project - IdoToxido.dll
+C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\refint\Final Project - IdoToxido.dll
+C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\Final Project - IdoToxido.pdb
+C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\Final Project - IdoToxido.genruntimeconfig.cache
+C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\ref\Final Project - IdoToxido.dll
