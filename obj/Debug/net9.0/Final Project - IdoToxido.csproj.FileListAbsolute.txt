@@ -28,3 +28,18 @@ C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\refint\Final Project - Ido
 C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\Final Project - IdoToxido.pdb
 C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\Final Project - IdoToxido.genruntimeconfig.cache
 C:\Users\user\FinaleProg\JackBlack-2\obj\Debug\net9.0\ref\Final Project - IdoToxido.dll
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\bin\Debug\net9.0\Final Project - IdoToxido.exe
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\bin\Debug\net9.0\Final Project - IdoToxido.deps.json
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\bin\Debug\net9.0\Final Project - IdoToxido.runtimeconfig.json
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\bin\Debug\net9.0\Final Project - IdoToxido.dll
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\bin\Debug\net9.0\Final Project - IdoToxido.pdb
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\obj\Debug\net9.0\Final Project - IdoToxido.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\obj\Debug\net9.0\Final Project - IdoToxido.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\obj\Debug\net9.0\Final Project - IdoToxido.AssemblyInfo.cs
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\obj\Debug\net9.0\Final Project - IdoToxido.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\obj\Debug\net9.0\Final Project - IdoToxido.sourcelink.json
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\obj\Debug\net9.0\Final Project - IdoToxido.dll
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\obj\Debug\net9.0\refint\Final Project - IdoToxido.dll
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\obj\Debug\net9.0\Final Project - IdoToxido.pdb
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\obj\Debug\net9.0\Final Project - IdoToxido.genruntimeconfig.cache
+C:\Users\User\Desktop\Final Project - IdoToxido\JackBlack\obj\Debug\net9.0\ref\Final Project - IdoToxido.dll
