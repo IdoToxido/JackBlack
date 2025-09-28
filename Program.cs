@@ -4,8 +4,6 @@ using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Transactions;
 // Fix and/or complete SPLIT option
-// K 6 8 gives win NEED FIX
-// CHANGE ALL TO USER CLASS
 class User()
 {
     public bool HasHit = false;
