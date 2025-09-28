@@ -16,19 +16,20 @@ class User()
     public int Money = 100;
     public List<int> Deck = [];
     public List<int> SplitHandSums = [];
+    public int TimesSplit = 0;
 }
 class PlayingCards()
 {
     // UNTOUCHED
     public List<int> ShuffledDeck = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-                                     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-                                     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-                                     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ];
+                                      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                                      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                                      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ];
     // Current playing deck
     public List<int> Deck = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-                             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-                             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-                             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ];
+                              1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                              1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                              1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ];
 
     public void Shuffle()
     {
@@ -61,7 +62,7 @@ class PlayingCards()
 
 class Program
 {
-    static int PlayerCount = 0;
+    static int PlayerCount = 1;
     static List<User> AllPlayers = [];
     static List<int> Dealer = [];
     static PlayingCards PD = new();
@@ -69,7 +70,7 @@ class Program
     static string input = "";
     public static void Main()
     {
-        CheckCountInput();
+        // CheckCountInput(); UNFREEZE
         for (int i = 0; i < PlayerCount; i++)
             AllPlayers.Add(new User());
         while (input != "end")
@@ -81,15 +82,18 @@ class Program
             for (int i = 0; i < 2; i++)
                 PD.DrawCard(Dealer);
             List<string> StrDealer = List2Str(Dealer);
-            CheckBetInput();
+            // CheckBetInput(); UNFREEZE
+            AllPlayers[0].bet = 10;
             //Playing sequence for all players
             for (int i = 0; i < AllPlayers.Count; i++)
             {
                 // Players card draw
-                for (int j = 0; j < 2; j++)
-                {
-                    PD.DrawCard(AllPlayers[i].Deck);
-                }
+                // for (int j = 0; j < 2; j++) UNFREEZE
+                // {
+                //     PD.DrawCard(AllPlayers[i].Deck);
+                // }
+                PD.DWC(AllPlayers[i].Deck, 11); PD.DWC(AllPlayers[i].Deck, 11);
+                // 
                 List<string> StrPlayer = List2Str(AllPlayers[i].Deck);
                 Print(StrDealer, StrPlayer, false, i);
                 // Options
@@ -150,7 +154,6 @@ class Program
         }
         return AllPlayers[i].lost;
     }
-
     public static List<string> List2Str(List<int> Cards)
     {
         List<string> rtn = [];
@@ -182,15 +185,15 @@ class Program
         }
         return rtn;
     }
-    public static void Print(List<string> DealerHand, List<string> PlayerHand, bool DealerContinue, int index)
+    public static void Print(List<string> DealerHand, List<string> PlayerHand, bool DealerContinue, int i)
     {
         for (int j = 0; j < 30; j++)
             Console.Write('_');
-        for (int i = 0; i < 2; i++)
+        for (int j = 0; j < 2; j++)
             Console.WriteLine();
         // start card print
         PrintCard(DealerHand, true, DealerContinue);
-        for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
             Console.WriteLine();
         if (!DealerContinue)
             PrintCard(PlayerHand, false, true);
@@ -201,10 +204,10 @@ class Program
         {
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Player {index + 1}'s turn! ");
+            Console.WriteLine($"Player {i + 1}'s turn! ");
             Console.ResetColor();
         }
-        for (int i = 0; i < 2; i++)
+        for (int j = 0; j < 2; j++)
             Console.WriteLine();
     }
     // C - Card, D - Dealer's Card, Cont - Continue
@@ -300,20 +303,19 @@ class Program
         }
         return sum;
     }
-    public static void Split(int card1, int card2, int i)
+    public static void Split(int i)
     {
+        AllPlayers[i].TimesSplit += 1;
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"Cards split! Player {i + 1}'s new bet is: {AllPlayers[i].bet * 2}");
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine($"Player {i + 1} press 'S' or bust in order to get to the next hand.");
         Console.ResetColor();
-        List<int> Ydeck1 = [card1];
-        List<int> Ydeck2 = [card2];
-        PD.DrawCard(Ydeck1);
+        AllPlayers[i].Deck = [AllPlayers[i].Deck[0]];
+        PD.DrawCard(AllPlayers[i].Deck);
         PD.DrawCard(Ydeck2);
-        Print(List2Str(Dealer), List2Str(Ydeck1), false, i);
-        SplitActions(Ydeck1, 1);
-        SplitActions(Ydeck2, 2);
+        SplitActions(i);
+        SplitActions(i);
     }
     // dealer draws cards until 17 then checks if the player won or blackjacked
     public static void SplitDdrawPwin()
@@ -386,18 +388,19 @@ class Program
         }
         PrintWinChart();
     }
-    public static void SplitActions(List<int> Ydeck, int i)
+    public static void SplitActions(List<int> Ydeck, int HandNum, int i)
     {
+        Print(List2Str(Dealer), List2Str(AllPlayers[i].Deck), false, i);
         while (true)
         {
             Console.ForegroundColor = ConsoleColor.DarkMagenta;
-            Console.WriteLine($"Hand {i + 1}");
+            Console.WriteLine($"Hand {HandNum} ");
             ConsoleKey Act = Console.ReadKey(true).Key;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("H - hit,  S - stand,  Y - split");
             Console.ResetColor();
-            if (Act == ConsoleKey.Y && Ydeck[0] == Ydeck[1] && !AllPlayers[i].HasHit)
-                Split(Ydeck[0], Ydeck[1], i);
+            if (Act == ConsoleKey.Y && AllPlayers[i].Deck[0] == AllPlayers[i].Deck[1] && !AllPlayers[i].HasHit)
+                Split(i);
             if (Act == ConsoleKey.H)
             {
                 AllPlayers[i].HasHit = true;
