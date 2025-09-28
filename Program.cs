@@ -4,6 +4,7 @@ using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Transactions;
 // Fix and/or complete SPLIT option
+// search SPLIT RELATED 
 class User()
 {
     public bool HasHit = false;
@@ -105,13 +106,15 @@ class Program
                     Console.WriteLine("H - hit,  S - stand,  Y - split,  D - double down");
                     Console.WriteLine();
                     ConsoleKey Act = Console.ReadKey(true).Key;
-                    if (Act == ConsoleKey.Y && !AllPlayers[i].HasHit)
-                    {
-                        Split(AllPlayers[i].Deck[0], AllPlayers[i].Deck[1], i);
-                        AllPlayers[i].HasSplit = true;
-                        break;
-                    }
-                    else if (Act == ConsoleKey.H && !AllPlayers[i].HasDoubledDown)
+                    // SPLIT RELATED
+                    // if (Act == ConsoleKey.Y && !AllPlayers[i].HasHit)
+                    // {
+                    //     Split(AllPlayers[i].Deck[0], AllPlayers[i].Deck[1], i);
+                    //     AllPlayers[i].HasSplit = true;
+                    //     break;
+                    // }
+                    // ADD ELSE SPLIT RELATED
+                    if (Act == ConsoleKey.H && !AllPlayers[i].HasDoubledDown)
                     {
                         if (LostHit(false, i))
                             break;
@@ -136,7 +139,8 @@ class Program
             while (HandSum(Dealer) <= 16)
                 PD.DrawCard(Dealer);
             DdrawPwin();
-            SplitDdrawPwin();
+            // SPLIT RELATED
+            // SplitDdrawPwin();
         }
     }
     public static bool LostHit(bool IsInSplit, int i)
@@ -301,48 +305,49 @@ class Program
         }
         return sum;
     }
-    public static void Split(int i)
-    {
-        AllPlayers[i].TimesSplit += 1;
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Cards split! Player {i + 1}'s new bet is: {AllPlayers[i].bet * 2}");
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"Player {i + 1} press 'S' or bust in order to get to the next hand.");
-        Console.ResetColor();
-        AllPlayers[i].Deck = [AllPlayers[i].Deck[0]];
-        PD.DrawCard(AllPlayers[i].Deck);
-        PD.DrawCard(Ydeck2);
-        SplitActions(i);
-        SplitActions(i);
-    }
-    // dealer draws cards until 17 then checks if the player won or blackjacked
-    public static void SplitDdrawPwin()
-    {
-        int DealerSum = HandSum(Dealer);
-        for (int i = 0; i < PlayerCount; i++)
-            if (AllPlayers[i].HasSplit)
-                foreach (int SplitPlayerSum in AllPlayers[i].SplitHandSums)
-                    if (SplitPlayerSum == DealerSum)
-                    {
-                        Console.WriteLine($"Player {i + 1} pushed!");
-                        AllPlayers[i].Money += AllPlayers[i].bet;
-                        DealerMoney -= AllPlayers[i].bet;
-                    }
-                    else if (DealerSum >= 22)
-                    {
-                        Console.WriteLine($"Dealer busted! Player {i + 1} Won!");
-                        AllPlayers[i].Money += AllPlayers[i].bet * 2;
-                        DealerMoney -= AllPlayers[i].bet * 2;
-                    }
-                    else if (SplitPlayerSum > DealerSum)
-                    {
-                        Console.WriteLine($"Player{i + 1} won!");
-                        AllPlayers[i].Money += AllPlayers[i].bet * 2;
-                        DealerMoney -= AllPlayers[i].bet * 2;
-                    }
-                    else if (SplitPlayerSum < DealerSum)
-                        Console.WriteLine($"Player {i + 1} lost! Better luck next time!");
-    }
+    //  SPLIT RELATED
+    // public static void Split(int i)
+    // {
+    //     AllPlayers[i].TimesSplit += 1;
+    //     Console.ForegroundColor = ConsoleColor.Green;
+    //     Console.WriteLine($"Cards split! Player {i + 1}'s new bet is: {AllPlayers[i].bet * 2}");
+    //     Console.ForegroundColor = ConsoleColor.Red;
+    //     Console.WriteLine($"Player {i + 1} press 'S' or bust in order to get to the next hand.");
+    //     Console.ResetColor();
+    //     AllPlayers[i].Deck = [AllPlayers[i].Deck[0]];
+    //     PD.DrawCard(AllPlayers[i].Deck);
+    //     PD.DrawCard(Ydeck2);
+    //     SplitActions(i);
+    //     SplitActions(i);
+    // }
+    // SPLIT RELATED
+    // public static void SplitDdrawPwin()
+    // {
+    //     int DealerSum = HandSum(Dealer);
+    //     for (int i = 0; i < PlayerCount; i++)
+    //         if (AllPlayers[i].HasSplit)
+    //             foreach (int SplitPlayerSum in AllPlayers[i].SplitHandSums)
+    //                 if (SplitPlayerSum == DealerSum)
+    //                 {
+    //                     Console.WriteLine($"Player {i + 1} pushed!");
+    //                     AllPlayers[i].Money += AllPlayers[i].bet;
+    //                     DealerMoney -= AllPlayers[i].bet;
+    //                 }
+    //                 else if (DealerSum >= 22)
+    //                 {
+    //                     Console.WriteLine($"Dealer busted! Player {i + 1} Won!");
+    //                     AllPlayers[i].Money += AllPlayers[i].bet * 2;
+    //                     DealerMoney -= AllPlayers[i].bet * 2;
+    //                 }
+    //                 else if (SplitPlayerSum > DealerSum)
+    //                 {
+    //                     Console.WriteLine($"Player{i + 1} won!");
+    //                     AllPlayers[i].Money += AllPlayers[i].bet * 2;
+    //                     DealerMoney -= AllPlayers[i].bet * 2;
+    //                 }
+    //                 else if (SplitPlayerSum < DealerSum)
+    //                     Console.WriteLine($"Player {i + 1} lost! Better luck next time!");
+    // }
     public static void DdrawPwin()
     {
         Print(List2Str(Dealer), List2Str(AllPlayers[0].Deck), true, 0);
@@ -386,32 +391,33 @@ class Program
         }
         PrintWinChart();
     }
-    public static void SplitActions(List<int> Ydeck, int HandNum, int i)
-    {
-        Print(List2Str(Dealer), List2Str(AllPlayers[i].Deck), false, i);
-        while (true)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkMagenta;
-            Console.WriteLine($"Hand {HandNum} ");
-            ConsoleKey Act = Console.ReadKey(true).Key;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("H - hit,  S - stand,  Y - split");
-            Console.ResetColor();
-            if (Act == ConsoleKey.Y && AllPlayers[i].Deck[0] == AllPlayers[i].Deck[1] && !AllPlayers[i].HasHit)
-                Split(i);
-            if (Act == ConsoleKey.H)
-            {
-                AllPlayers[i].HasHit = true;
-                if (LostHit(true, i))
-                    break;
-            }
-            else if (Act == ConsoleKey.S || HandSum(Ydeck) == 21)
-            {
-                AllPlayers[i].SplitHandSums.Add(HandSum(Ydeck));
-                break;
-            }
-        }
-    }
+    // SPLIT RELATED
+    // public static void SplitActions(List<int> Ydeck, int HandNum, int i)
+    // {
+    //     Print(List2Str(Dealer), List2Str(AllPlayers[i].Deck), false, i);
+    //     while (true)
+    //     {
+    //         Console.ForegroundColor = ConsoleColor.DarkMagenta;
+    //         Console.WriteLine($"Hand {HandNum} ");
+    //         ConsoleKey Act = Console.ReadKey(true).Key;
+    //         Console.ForegroundColor = ConsoleColor.Red;
+    //         Console.WriteLine("H - hit,  S - stand,  Y - split");
+    //         Console.ResetColor();
+    //         if (Act == ConsoleKey.Y && AllPlayers[i].Deck[0] == AllPlayers[i].Deck[1] && !AllPlayers[i].HasHit)
+    //             Split(i);
+    //         if (Act == ConsoleKey.H)
+    //         {
+    //             AllPlayers[i].HasHit = true;
+    //             if (LostHit(true, i))
+    //                 break;
+    //         }
+    //         else if (Act == ConsoleKey.S || HandSum(Ydeck) == 21)
+    //         {
+    //             AllPlayers[i].SplitHandSums.Add(HandSum(Ydeck));
+    //             break;
+    //         }
+    //     }
+    // }
     public static bool CheckNumber(string str)
     {
         foreach (char c in str)
@@ -438,6 +444,7 @@ class Program
     public static void CheckBetInput()
     {
         for (int i = 0; i < PlayerCount; i++)
+        {
             while (true) // Checking that the bet is alright
             {
                 Console.WriteLine($"Dealer's Currency: {DealerMoney}$");
@@ -452,20 +459,24 @@ class Program
                         continue;
                     }
                     if (AllPlayers[i].bet > DealerMoney)
-                    {
-                        Console.WriteLine($"Dealer has insufficient funds! Player{i + 1}, Please enter a new amount to bet.");
-                        continue;
-                    }
-                    else
-                    {
-                        DealerMoney += AllPlayers[i].bet;
-                        AllPlayers[i].Money -= AllPlayers[i].bet;
-                        break;
-                    }
+                        if (AllPlayers[i].bet > DealerMoney)
+                        {
+                            Console.WriteLine($"Dealer has insufficient funds! Player{i + 1}, Please enter a new amount to bet.");
+                            continue;
+                        }
+                        else
+                        {
+                            DealerMoney += AllPlayers[i].bet;
+                            AllPlayers[i].Money -= AllPlayers[i].bet;
+                            DealerMoney += AllPlayers[i].bet;
+                            AllPlayers[i].Money -= AllPlayers[i].bet;
+                            break;
+                        }
                 }
                 else
                     Console.WriteLine("Input Error! Please Try Again."); continue;
             }
+        }
     }
     public static void PrintWinChart()
     {
@@ -484,7 +495,10 @@ class Program
             Console.Write($"{DealerHandSum,-3}|");
             Console.ResetColor();
             Console.Write("| ");
+            Console.Write("| ");
             Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"Win: {!AllPlayers[i].lost}");
+            Console.WriteLine();
             Console.Write($"Win: {!AllPlayers[i].lost}");
             Console.WriteLine();
             Console.ResetColor();
